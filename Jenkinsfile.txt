@@ -1,38 +1,39 @@
-pipeline {
-    agent any
+environment {
+        AWS_CREDENTIALS = credentials('aws-credentials') // Reference to the stored AWS credentials
+        TF_VAR_aws_access_key = "${AWS_CREDENTIALS_USR}"
+        TF_VAR_aws_secret_key = "${AWS_CREDENTIALS_PSW}"
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', 
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/Mahidhar-Mahi/Terraform-EC2-Deployment.git']]
-                ])
+                // Checkout the repository
+                git branch: 'main', url: 'https://github.com/Mahidhar-Mahi/Terraform-EC2-Deployment.git'
             }
         }
         stage('Terraform Init') {
             steps {
-                sh '''
-                cd /path/to/EKS_Module
-                terraform init
-                '''
+                // Initialize Terraform
+                sh 'terraform init'
             }
         }
         stage('Terraform Plan') {
             steps {
-                sh '''
-                cd /path/to/terraform-aws-ec2
-                terraform plan -out=tfplan
-                '''
+                // Plan Terraform changes
+                sh 'terraform plan'
             }
         }
         stage('Terraform Apply') {
             steps {
-                sh '''
-                cd /path/to/terraform-aws-ec2
-                terraform apply -auto-approve tfplan
-                '''
+                // Apply Terraform changes
+                sh 'terraform apply -auto-approve'
             }
+        }
+    }
+    post {
+        always {
+            // Clean up the workspace
+            cleanWs()
         }
     }
 }
