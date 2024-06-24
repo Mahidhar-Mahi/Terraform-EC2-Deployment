@@ -1,7 +1,7 @@
 environment {
         AWS_CREDENTIALS = credentials('aws-credentials') // Reference to the stored AWS credentials
-        TF_VAR_aws_access_key = "${AWS_CREDENTIALS_USR}"
-        TF_VAR_aws_secret_key = "${AWS_CREDENTIALS_PSW}"
+        AWS_ACCESS_KEY_ID = "${AWS_CREDENTIALS_USR}"
+        AWS_SECRET_ACCESS_KEY = "${AWS_CREDENTIALS_PSW}"
     }
 
     stages {
