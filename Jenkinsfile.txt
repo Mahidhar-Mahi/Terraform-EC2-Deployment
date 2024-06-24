@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/Mahidhar-Mahi/Terraform-EC2-Deployment.git']]
+                ])
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                sh '''
+                cd /path/to/EKS_Module
+                terraform init
+                '''
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                sh '''
+                cd /path/to/terraform-aws-ec2
+                terraform plan -out=tfplan
+                '''
+            }
+        }
+        stage('Terraform Apply') {
+            steps {
+                sh '''
+                cd /path/to/terraform-aws-ec2
+                terraform apply -auto-approve tfplan
+                '''
+            }
+        }
+    }
+}
